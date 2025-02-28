@@ -2,7 +2,9 @@
 
 A modern, Vue.js-based page builder for WordPress that provides an intuitive drag-and-drop interface for creating custom page layouts without writing code.
 
-![Imagine Page Builder](logo-imagewize.png)
+<p align="center">
+  <img src="logo-imagewize.png" alt="Imagine Page Builder">
+</p>
 
 ## Features
 
