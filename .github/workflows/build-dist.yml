@@ -1,0 +1,40 @@
+name: Build and Commit Dist
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-commit:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18.x'
+        cache: 'yarn'
+    
+    - name: Install dependencies
+      run: yarn install
+    
+    - name: Build
+      run: yarn build
+      
+    - name: Check for changes in dist
+      id: check_changes
+      run: |
+        git diff --quiet dist/ || echo "changes=true" >> $GITHUB_OUTPUT
+    
+    - name: Commit dist if changed
+      if: steps.check_changes.outputs.changes == 'true'
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add dist/
+        git commit -m "chore: update dist files [skip ci]"
+        git push
