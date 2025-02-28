@@ -1,0 +1,43 @@
+options:
+  formatter: stylish
+  merge-default-rules: false
+rules:
+  # Style enforcement
+  indentation:
+    - 2
+    - size: 2
+  final-newline:
+    - 2
+    - include: true
+  no-duplicate-properties:
+    - 2
+  property-sort-order:
+    - 1
+    - order:
+      - position
+      - top
+      - right
+      - bottom
+      - left
+      - display
+      - flex
+      - etc...
+      
+  # Disallow features
+  no-important: 2
+  no-ids: 2
+  no-universal-selectors: 2
+  
+  # Encourage newer APIs
+  no-css-comments: 1
+  no-vendor-prefixes: 
+    - 2
+    - additional-identifiers:
+      - khtml
+      - moz
+      - ms
+      - o
+      - webkit
+    
+  # Other
+  url-quotes: 2

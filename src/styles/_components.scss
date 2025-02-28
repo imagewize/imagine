@@ -1,0 +1,70 @@
+@use "sass:color" as c;
+@use "variables" as vars;
+
+// Block styles
+.editor-block {
+  margin-bottom: vars.$spacing-md;
+  border: 1px solid vars.$color-border;
+  border-radius: vars.$border-radius-md;
+  overflow: hidden;
+  
+  &--selected {
+    border-color: vars.$color-primary;
+    box-shadow: 0 0 0 1px vars.$color-primary;
+  }
+  
+  &__toolbar {
+    display: flex;
+    padding: vars.$spacing-xs vars.$spacing-sm;
+    background-color: vars.$color-light;
+    border-bottom: 1px solid vars.$color-border;
+    align-items: center;
+    font-size: vars.$font-size-xs;
+    
+    .block-handle {
+      cursor: move;
+      margin-right: vars.$spacing-sm;
+    }
+    
+    .block-type {
+      flex: 1;
+      font-weight: 500;
+    }
+    
+    .block-delete {
+      cursor: pointer;
+      color: vars.$color-danger;
+      background: transparent;
+      border: none;
+      padding: 0;
+    }
+  }
+  
+  &__content {
+    padding: vars.$spacing-sm;
+  }
+}
+
+// Options panel styles
+.option-group {
+  margin-bottom: vars.$spacing-md;
+  
+  label {
+    display: block;
+    margin-bottom: vars.$spacing-xs;
+    font-weight: 500;
+  }
+  
+  input, select, textarea {
+    width: 100%;
+    padding: vars.$spacing-sm;
+    border: 1px solid vars.$color-border;
+    border-radius: vars.$border-radius-md;
+    
+    &:focus {
+      border-color: vars.$color-primary;
+      box-shadow: 0 0 0 1px vars.$color-primary;
+      outline: none;
+    }
+  }
+}

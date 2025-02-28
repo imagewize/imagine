@@ -1,0 +1,40 @@
+// All @use statements must come first
+// Note: sass:color is already imported via additionalData in Vite config
+@use "variables" as vars;
+@use "components";
+
+// Global styles follow after all @use statements
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  color: $color-text;
+  font-size: $font-size-md;
+  line-height: 1.5;
+}
+
+// Button styles using the modern API
+.imagine-button {
+  padding: $spacing-sm $spacing-md;
+  border-radius: $border-radius-md;
+  cursor: pointer;
+  border: 1px solid $color-border;
+  background-color: $color-light;
+  margin-left: $spacing-sm;
+  
+  &--primary {
+    background-color: $color-primary;
+    border-color: $color-primary;
+    color: $color-white;
+    
+    &:hover {
+      background-color: $color-primary-dark;
+    }
+  }
+  
+  &--secondary {
+    &:hover {
+      // Using color.adjust instead of darken()
+      background-color: color.adjust($color-light, $lightness: -5%);
+    }
+  }
+}

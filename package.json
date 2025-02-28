@@ -1,0 +1,44 @@
+{
+  "name": "imagine-page-builder",
+  "version": "1.0.0",
+  "description": "A Vue.js-based page builder for WordPress",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "lint": "eslint src --ext .js,.vue --config .eslintrc.cjs",
+    "clean": "rm -rf node_modules/.cache dist",
+    "rebuild": "yarn clean && yarn install && yarn build",
+    "prebuild": "node -e \"try{require('fs').rmSync('./dist', {recursive:true})}catch(e){}\"",
+    "prebuild:parcel-watcher": "node -e \"try { require('child_process').execSync('node-gyp rebuild', { cwd: 'node_modules/@parcel/watcher' })} catch (e) { console.error('Failed to prebuild @parcel/watcher', e) }\"",
+    "prebuild:esbuild": "node -e \"try { require('child_process').execSync('node-gyp rebuild', { cwd: 'node_modules/esbuild' })} catch (e) { console.error('Failed to prebuild esbuild', e) }\""
+  },
+  "keywords": [
+    "wordpress",
+    "page-builder",
+    "vue"
+  ],
+  "author": "Jasper Frumau",
+  "license": "MIT",
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.0",
+    "eslint": "^8.47.0",
+    "eslint-plugin-vue": "^9.17.0",
+    "sass": "^1.85.1",
+    "terser": "^5.24.0",
+    "vite": "^5.4.0"
+  },
+  "dependencies": {
+    "@parcel/watcher": "2.5.1",
+    "esbuild": "0.21.5",
+    "pinia": "^2.1.7",
+    "vue": "^3.4.0",
+    "vuedraggable": "^4.1.0"
+  },
+  "packageManager": "yarn@4.6.0",
+  "engines": {
+    "node": ">=18.12.0"
+  }
+}

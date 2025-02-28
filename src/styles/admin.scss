@@ -1,0 +1,45 @@
+// Admin panel styles
+
+.imagine-settings-container {
+  max-width: 960px;
+  
+  .settings-section {
+    margin-bottom: 2em;
+    background: #fff;
+    padding: 1.5em;
+    border: 1px solid #ccd0d4;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    
+    h2 {
+      margin-top: 0;
+    }
+    
+    .form-table {
+      margin-top: 1em;
+    }
+  }
+  
+  .imagine-button-row {
+    margin-top: 1em;
+  }
+}
+
+.imagine-badge {
+  background: #0073aa;
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 0.8em;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.imagine-color-preview {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  vertical-align: middle;
+  margin-right: 8px;
+}

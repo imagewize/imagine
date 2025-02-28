@@ -1,0 +1,51 @@
+// This file provides shared styles for components
+// Use variables from the global space (included via additionalData)
+
+// Component base styles
+.block-component {
+  margin-bottom: $spacing-md;
+  
+  &__content {
+    margin: 0;
+    padding: $spacing-sm;
+  }
+}
+
+// Options panel base styles
+.options-component {
+  .option-group {
+    margin-bottom: $spacing-md;
+    
+    label {
+      display: block;
+      margin-bottom: $spacing-xs;
+      font-weight: 500;
+    }
+    
+    input, select, textarea {
+      width: 100%;
+      padding: $spacing-sm;
+      border: 1px solid $color-border;
+      border-radius: $border-radius-md;
+      
+      &:focus {
+        border-color: $color-primary;
+        outline: none;
+      }
+    }
+  }
+}
+
+// Shared hover effect
+@mixin hover-highlight {
+  &:hover {
+    background-color: color.adjust(#000000, $alpha: -0.97);
+  }
+}
+
+// Shared active effect
+@mixin active-highlight {
+  background-color: $color-primary;
+  color: $color-white;
+  border-color: $color-primary;
+}
