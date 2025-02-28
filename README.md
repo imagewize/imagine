@@ -60,9 +60,13 @@ ln -s /path/to/imagine /path/to/wordpress/wp-content/plugins/
 
 ## GitHub Actions Workflow
 
-This project uses GitHub Actions to automatically build and release the plugin:
+This project uses GitHub Actions to automate builds, tests, and releases:
 
-1. When code is pushed to the `main` branch, the CI workflow runs tests and linting
+1. When code is pushed to the `main` branch, the CI workflow runs:
+   - Installs dependencies using `yarn install`
+   - Verifies that the `yarn.lock` file is unchanged
+   - Builds the project using `yarn build`
+   - Runs linting using `yarn lint`
 2. When a new tag is created (e.g., `v1.0.0`), the release workflow:
    - Builds the frontend assets
    - Packages the plugin as a ZIP file
