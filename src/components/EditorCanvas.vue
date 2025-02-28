@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import draggable from 'vuedraggable';
 import HeaderBlock from './blocks/HeaderBlock.vue';
 import ParagraphBlock from './blocks/ParagraphBlock.vue';

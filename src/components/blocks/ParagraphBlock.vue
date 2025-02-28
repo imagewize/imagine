@@ -19,9 +19,7 @@ export default {
     }
   },
   
-  emits: ['update:block'],
-  
-  setup(props, { emit }) {
+  setup(props) {
     const localBlock = ref({ ...props.block });
     
     // Initialize default settings if not present

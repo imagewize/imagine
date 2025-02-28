@@ -60,7 +60,6 @@ export default {
     BlockOptions
   },
   setup() {
-    const blocksStore = useBlocksStore();
     const postId = ref(0);
     const postTitle = ref('');
     const blocks = ref([]);
@@ -129,13 +128,15 @@ export default {
       let htmlContent = '';
       blocks.value.forEach(block => {
         switch (block.type) {
-          case 'header':
+          case 'header': {
             const tag = block.settings.level || 'h2';
             htmlContent += `<${tag}>${block.content}</${tag}>`;
             break;
-          case 'paragraph':
+          }
+          case 'paragraph': {
             htmlContent += `<p>${block.content}</p>`;
             break;
+          }
           default:
             break;
         }
