@@ -66,13 +66,8 @@ This project uses GitHub Actions to automate builds, tests, and releases:
    - Verifies that the `yarn.lock` file is unchanged
    - Builds the project using `yarn build`
    - Runs linting using `yarn lint`
-   
-2. After merges to `main`, the build-dist workflow:
-   - Automatically builds the project
-   - Commits updated `dist/` files back to the repository
-   - Ensures the repository always contains the latest built files
 
-3. When a new tag is created (e.g., `v1.0.0`), the release workflow:
+2. When a new tag is created (e.g., `v1.0.0`), the release workflow:
    - Builds the frontend assets
    - Packages the plugin as a ZIP file
    - Creates a GitHub release with the ZIP attached
@@ -89,7 +84,8 @@ This project uses a protected main branch workflow:
 4. CI runs automatically on all PRs to validate the build
 5. At least one code review approval is required
 6. When approved and CI passes, the PR can be merged
-7. After merging, the build-dist workflow automatically updates the built files in the repository
+
+For local development and testing, you'll need to build the assets yourself:
 
 ### Creating a New Feature
 
