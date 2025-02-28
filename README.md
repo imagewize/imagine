@@ -2,7 +2,7 @@
 
 A modern, Vue.js-based page builder for WordPress that provides an intuitive drag-and-drop interface for creating custom page layouts without writing code.
 
-![Imagine Page Builder](assets/imagine-banner.png)
+![Imagine Page Builder](logo-imagewize.png)
 
 ## Features
 
@@ -66,6 +66,7 @@ This project uses GitHub Actions to automate builds, tests, and releases:
    - Verifies that the `yarn.lock` file is unchanged
    - Builds the project using `yarn build`
    - Runs linting using `yarn lint`
+
 2. When a new tag is created (e.g., `v1.0.0`), the release workflow:
    - Builds the frontend assets
    - Packages the plugin as a ZIP file
@@ -84,6 +85,8 @@ This project uses a protected main branch workflow:
 5. At least one code review approval is required
 6. When approved and CI passes, the PR can be merged
 
+For local development and testing, you'll need to build the assets yourself:
+
 ### Creating a New Feature
 
 ```bash
@@ -101,6 +104,21 @@ git push -u origin feature/awesome-new-feature
 ```
 
 Then create a Pull Request on GitHub from your feature branch to main.
+
+### Tagging a Release
+
+To tag a release for your project, follow these steps:
+
+1. Ensure your `main` branch is up-to-date and all changes are committed.
+2. Create a new tag for the release:
+   ```bash
+   git tag -a v1.0.0 -m "Release version 1.0.0"
+   ```
+3. Push the tag to GitHub:
+   ```bash
+   git push origin v1.0.0
+   ```
+4. Go to the [GitHub releases page](https://github.com/imagewize/imagine/releases) and create a new release using the pushed tag.
 
 ## Usage Guide
 
