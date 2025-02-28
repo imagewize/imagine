@@ -34,7 +34,7 @@ A modern, Vue.js-based page builder for WordPress that provides an intuitive dra
 
 1. Clone this repository
 ```
-git clone https://github.com/yourname/imagine.git
+git clone https://github.com/imagewize/imagine.git
 cd imagine
 ```
 
@@ -63,7 +63,6 @@ ln -s /path/to/imagine /path/to/wordpress/wp-content/plugins/
 This project uses GitHub Actions to automate builds, tests, and releases:
 
 1. When code is pushed to the `main` branch, the CI workflow runs:
-   - Installs dependencies using `yarn install`
    - Verifies that the `yarn.lock` file is unchanged
    - Builds the project using `yarn build`
    - Runs linting using `yarn lint`
