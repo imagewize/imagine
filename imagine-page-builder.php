@@ -83,3 +83,66 @@ function imagine_add_edit_button($actions, $post) {
 }
 add_filter('post_row_actions', 'imagine_add_edit_button', 10, 2);
 add_filter('page_row_actions', 'imagine_add_edit_button', 10, 2);
+
+// Add edit with Imagine button to admin bar
+function imagine_admin_bar_edit_link($wp_admin_bar) {
+    if (!is_singular() || !current_user_can('edit_post', get_the_ID())) {
+        return;
+    }
+    
+    $wp_admin_bar->add_node(array(
+        'id'    => 'edit_with_imagine',
+        'title' => 'Edit with Imagine',
+        'href'  => admin_url('admin.php?page=imagine-editor&post_id=' . get_the_ID()),
+        'meta'  => array(
+            'class' => 'imagine-edit-link'
+        )
+    ));
+}
+add_action('admin_bar_menu', 'imagine_admin_bar_edit_link', 80);
+
+// Display admin notice after activation
+function imagine_admin_notice() {
+    // Only show this notice once
+    if (get_option('imagine_activation_notice_shown')) {
+        return;
+    }
+    
+    ?>
+    <div class="notice notice-info is-dismissible">
+        <h3>Imagine Page Builder is now active!</h3>
+        <p>You can now edit your pages and posts with Imagine Page Builder in two ways:</p>
+        <ul style="list-style-type: disc; padding-left: 20px;">
+            <li>From the "All Pages" or "All Posts" screen, hover over a page/post and click "Edit with Imagine"</li>
+            <li>When viewing a page/post on your site, use the "Edit with Imagine" option in the admin toolbar</li>
+        </ul>
+        <p><a href="<?php echo admin_url('edit.php?post_type=page'); ?>" class="button">Go to Pages</a></p>
+    </div>
+    <?php
+    
+    // Mark notice as shown
+    update_option('imagine_activation_notice_shown', true);
+}
+add_action('admin_notices', 'imagine_admin_notice');
+
+// Add metabox to the editor
+function imagine_add_meta_box() {
+    $screens = ['post', 'page'];
+    foreach ($screens as $screen) {
+        add_meta_box(
+            'imagine_editor_meta_box',
+            'Imagine Page Builder',
+            'imagine_meta_box_callback',
+            $screen,
+            'side',
+            'high'
+        );
+    }
+}
+add_action('add_meta_boxes', 'imagine_add_meta_box');
+
+// Meta box content
+function imagine_meta_box_callback($post) {
+    echo '<p>Use Imagine Page Builder to create beautiful layouts for this content.</p>';
+    echo '<a href="' . admin_url('admin.php?page=imagine-editor&post_id=' . $post->ID) . '" class="button button-primary">Edit with Imagine</a>';
+}
