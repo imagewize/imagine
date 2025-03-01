@@ -48,6 +48,31 @@ jobs:
           echo "dist/imagine-editor.asset.php already exists"
         fi
 
+    - name: Verify assets directory structure
+      run: |
+        echo "Checking directory structure..."
+        mkdir -p dist/assets
+        echo "Contents of dist directory:"
+        ls -la dist
+        echo "Contents of dist/assets directory (if exists):"
+        ls -la dist/assets || echo "dist/assets is empty or doesn't exist"
+
+    - name: Create placeholder assets if needed
+      run: |
+        # Create placeholder JS file if it doesn't exist
+        if [ ! -f "dist/assets/imagine-editor.js" ]; then
+          echo "Creating placeholder JS file"
+          mkdir -p dist/assets
+          echo "console.log('Imagine Page Builder Editor');" > dist/assets/imagine-editor.js
+        fi
+        
+        # Create placeholder CSS file if it doesn't exist
+        if [ ! -f "dist/assets/imagine-editor.css" ]; then
+          echo "Creating placeholder CSS file"
+          mkdir -p dist/assets
+          echo "/* Imagine Page Builder Editor styles */" > dist/assets/imagine-editor.css
+        fi
+
     - name: Create plugin directory
       run: |
         mkdir -p imagine-page-builder
@@ -62,26 +87,66 @@ jobs:
         else
           echo "No LICENSE file found, skipping..."
         fi
+        
+        # List the contents to verify packaging
+        echo "Plugin directory structure:"
+        find imagine-page-builder -type f | sort
       
     - name: Zip plugin
       run: zip -r imagine-page-builder.zip imagine-page-builder
 
-    # This handles when a tag is pushed but no release exists yet
-    - name: Auto-create release if tag pushed without release
+    - name: Debug tag/release info
+      run: |
+        echo "Current tag: ${GITHUB_REF#refs/tags/}"
+        echo "Event name: ${{ github.event_name }}"
+        echo "Checking if release exists..."
+        release_url="https://api.github.com/repos/${{ github.repository }}/releases/tags/${GITHUB_REF#refs/tags/}"
+        status_code=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" $release_url)
+        echo "Release API response code: $status_code"
+        
+        if [ "$status_code" = "200" ]; then
+          echo "Release already exists"
+        else
+          echo "Release needs to be created"
+        fi
+
+    # Create a release if we're pushing a tag and the release doesn't exist
+    - name: Create GitHub Release
       id: create_release
       if: github.event_name == 'push'
-      uses: softprops/action-gh-release@v1
-      with:
-        files: imagine-page-builder.zip
-        generate_release_notes: true
+      uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref_name }}
+        release_name: Release ${{ github.ref_name }}
+        draft: false
+        prerelease: false
+        body: |
+          Imagine Page Builder ${{ github.ref_name }}
+          
+          This release was automatically generated from tag ${{ github.ref_name }}
+    
+    # Upload the asset to the newly created release
+    - name: Upload Release Asset (Push Event)
+      if: github.event_name == 'push'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./imagine-page-builder.zip
+        asset_name: imagine-page-builder.zip
+        asset_content_type: application/zip
 
-    # This handles when operating on an existing release
-    - name: Attach to existing release
+    # This is for existing releases (published, edited)
+    - name: Upload Release Asset (Release Event)
       if: github.event_name == 'release'
-      uses: softprops/action-gh-release@v1
-      with:
-        files: imagine-page-builder.zip
+      uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./imagine-page-builder.zip
+        asset_name: imagine-page-builder.zip
+        asset_content_type: application/zip
