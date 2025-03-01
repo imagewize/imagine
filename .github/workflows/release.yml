@@ -95,25 +95,19 @@ jobs:
     - name: Zip plugin
       run: zip -r imagine-page-builder.zip imagine-page-builder
 
-    - name: Debug tag/release info
-      run: |
-        echo "Current tag: ${GITHUB_REF#refs/tags/}"
-        echo "Event name: ${{ github.event_name }}"
-        echo "Checking if release exists..."
-        release_url="https://api.github.com/repos/${{ github.repository }}/releases/tags/${GITHUB_REF#refs/tags/}"
-        status_code=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" $release_url)
-        echo "Release API response code: $status_code"
-        
-        if [ "$status_code" = "200" ]; then
-          echo "Release already exists"
-        else
-          echo "Release needs to be created"
-        fi
+    # Get release information and upload URL
+    - name: Get release
+      id: get_release
+      if: github.event_name == 'push'
+      uses: bruceadams/get-release@v1.3.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      continue-on-error: true
 
-    # Create a release if we're pushing a tag and the release doesn't exist
+    # Create release only if it doesn't exist
     - name: Create GitHub Release
       id: create_release
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' && steps.get_release.outcome == 'failure'
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -127,14 +121,25 @@ jobs:
           
           This release was automatically generated from tag ${{ github.ref_name }}
     
-    # Upload the asset to the newly created release
-    - name: Upload Release Asset (Push Event)
-      if: github.event_name == 'push'
+    # For push events, use the correct upload URL based on whether we created a new release or found an existing one
+    - name: Upload Release Asset (New Release)
+      if: github.event_name == 'push' && steps.create_release.outputs.upload_url != ''
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./imagine-page-builder.zip
+        asset_name: imagine-page-builder.zip
+        asset_content_type: application/zip
+
+    - name: Upload Release Asset (Existing Release)
+      if: github.event_name == 'push' && steps.create_release.outcome == 'success'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.get_release.outputs.upload_url }}
         asset_path: ./imagine-page-builder.zip
         asset_name: imagine-page-builder.zip
         asset_content_type: application/zip
