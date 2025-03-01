@@ -1,6 +1,8 @@
-name: Release
+name: Create plugin release
 
 on:
+  release:
+    types: [published, edited]
   push:
     tags:
       - 'v*'
@@ -23,8 +25,8 @@ jobs:
       
     - name: Build
       run: yarn build
-      
-    - name: Package plugin
+
+    - name: Create plugin directory
       run: |
         mkdir -p imagine-page-builder
         cp -r dist imagine-page-builder/
@@ -38,26 +40,26 @@ jobs:
         else
           echo "No LICENSE file found, skipping..."
         fi
-        
-        zip -r imagine-page-builder.zip imagine-page-builder
       
-    - name: Create Release
+    - name: Zip plugin
+      run: zip -r imagine-page-builder.zip imagine-page-builder
+
+    # This handles when a tag is pushed but no release exists yet
+    - name: Auto-create release if tag pushed without release
       id: create_release
-      uses: actions/create-release@v1
+      if: github.event_name == 'push'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: imagine-page-builder.zip
+        generate_release_notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    # This handles when operating on an existing release
+    - name: Attach to existing release
+      if: github.event_name == 'release'
+      uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
-        
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
+        files: imagine-page-builder.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./imagine-page-builder.zip
-        asset_name: imagine-page-builder.zip
-        asset_content_type: application/zip
