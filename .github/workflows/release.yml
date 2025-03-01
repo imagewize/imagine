@@ -31,7 +31,14 @@ jobs:
         cp -r includes imagine-page-builder/
         cp imagine-page-builder.php imagine-page-builder/
         cp README.md imagine-page-builder/
-        cp LICENSE imagine-page-builder/
+        
+        # Copy LICENSE file if it exists
+        if [ -f LICENSE ]; then
+          cp LICENSE imagine-page-builder/
+        else
+          echo "No LICENSE file found, skipping..."
+        fi
+        
         zip -r imagine-page-builder.zip imagine-page-builder
       
     - name: Create Release
