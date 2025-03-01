@@ -29,22 +29,38 @@ add_action('plugins_loaded', 'imagine_init');
 
 // Register editor scripts and styles
 function imagine_register_editor_assets() {
-    $asset_file = include(IMAGINE_PATH . 'dist/imagine-editor.asset.php');
+    // Always load the asset file from the includes directory
+    $asset_file = include(IMAGINE_PATH . 'includes/imagine-editor-asset.php');
     
-    wp_register_script(
-        'imagine-editor',
-        IMAGINE_ASSETS_URL . 'imagine-editor.js',
-        $asset_file['dependencies'],
-        $asset_file['version'],
-        true
-    );
+    // Only register scripts if the files exist
+    if (file_exists(IMAGINE_PATH . 'dist/assets/imagine-editor.js')) {
+        wp_register_script(
+            'imagine-editor',
+            IMAGINE_ASSETS_URL . 'imagine-editor.js',
+            $asset_file['dependencies'],
+            $asset_file['version'],
+            true
+        );
+    }
     
-    wp_register_style(
-        'imagine-editor-style',
-        IMAGINE_ASSETS_URL . 'imagine-editor.css',
-        [],
-        $asset_file['version']
-    );
+    if (file_exists(IMAGINE_PATH . 'dist/assets/imagine-editor.css')) {
+        wp_register_style(
+            'imagine-editor-style',
+            IMAGINE_ASSETS_URL . 'imagine-editor.css',
+            [],
+            $asset_file['version']
+        );
+    }
+    
+    // Register frontend block styles if they exist
+    if (file_exists(IMAGINE_PATH . 'dist/assets/imagine-blocks.css')) {
+        wp_register_style(
+            'imagine-blocks-style',
+            IMAGINE_ASSETS_URL . 'imagine-blocks.css',
+            [],
+            $asset_file['version']
+        );
+    }
 }
 add_action('admin_enqueue_scripts', 'imagine_register_editor_assets');
 
@@ -69,7 +85,6 @@ function imagine_save_page_data() {
     ];
     
     wp_update_post($post_data);
-    
     wp_send_json_success();
 }
 add_action('wp_ajax_imagine_save_page_data', 'imagine_save_page_data');

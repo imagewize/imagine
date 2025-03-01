@@ -1,6 +1,6 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+// Note: We're removing the WebpackManifestPlugin since we no longer need to generate the asset file
 
 module.exports = {
   mode: 'production',
@@ -67,25 +67,8 @@ module.exports = {
   plugins: [
     new MiniCssExtractPlugin({
       filename: '[name].css',
-    }),
-    new WebpackManifestPlugin({
-      fileName: '../imagine-editor.asset.php',
-      writeToFileEmit: true,
-      generate: (seed, files) => {
-        return {
-          dependencies: [
-            'wp-element',
-            'wp-components',
-            'wp-blocks',
-            'wp-i18n',
-            'wp-api-fetch',
-            'wp-editor',
-            'wp-hooks'  // Add hooks API for better WordPress integration
-          ],
-          version: require('./package.json').version
-        };
-      }
     })
+    // Removed WebpackManifestPlugin
   ],
   resolve: {
     alias: {
