@@ -25,6 +25,28 @@ jobs:
       
     - name: Build
       run: yarn build
+      
+    - name: Ensure asset PHP file exists
+      run: |
+        mkdir -p dist
+        if [ "${{ hashFiles('dist/imagine-editor.asset.php') }}" == "" ]; then
+          echo "Creating dist/imagine-editor.asset.php file"
+          echo '<?php' > dist/imagine-editor.asset.php
+          echo 'return array(' >> dist/imagine-editor.asset.php
+          echo "    'dependencies' => array(" >> dist/imagine-editor.asset.php
+          echo "        'wp-element'," >> dist/imagine-editor.asset.php
+          echo "        'wp-components'," >> dist/imagine-editor.asset.php
+          echo "        'wp-blocks'," >> dist/imagine-editor.asset.php
+          echo "        'wp-i18n'," >> dist/imagine-editor.asset.php
+          echo "        'wp-api-fetch'," >> dist/imagine-editor.asset.php
+          echo "        'wp-editor'" >> dist/imagine-editor.asset.php
+          echo "    )," >> dist/imagine-editor.asset.php
+          echo "    'version' => '1.0.0'" >> dist/imagine-editor.asset.php
+          echo ");" >> dist/imagine-editor.asset.php
+          echo "Created asset file successfully"
+        else
+          echo "dist/imagine-editor.asset.php already exists"
+        fi
 
     - name: Create plugin directory
       run: |
