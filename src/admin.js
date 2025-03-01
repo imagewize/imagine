@@ -26,6 +26,18 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Initialize any admin UI components
   initAdminComponents();
+
+  // Make admin notices dismissible
+  const notices = document.querySelectorAll('.imagine-notice .notice-dismiss');
+  notices.forEach(notice => {
+    notice.addEventListener('click', function() {
+      const noticeEl = this.parentElement;
+      noticeEl.style.opacity = 0;
+      setTimeout(() => {
+        noticeEl.style.display = 'none';
+      }, 300);
+    });
+  });
 });
 
 function initAdminComponents() {
