@@ -1,6 +1,8 @@
-name: Release
+name: Create plugin release
 
 on:
+  release:
+    types: [published, edited]
   push:
     tags:
       - 'v*'
@@ -23,8 +25,8 @@ jobs:
       
     - name: Build
       run: yarn build
-      
-    - name: Package plugin
+
+    - name: Create plugin directory
       run: |
         mkdir -p imagine-page-builder
         cp -r dist imagine-page-builder/
@@ -38,62 +40,26 @@ jobs:
         else
           echo "No LICENSE file found, skipping..."
         fi
-        
-        zip -r imagine-page-builder.zip imagine-page-builder
+      
+    - name: Zip plugin
+      run: zip -r imagine-page-builder.zip imagine-page-builder
 
-    - name: Extract tag name
-      id: tag
-      run: echo "name=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-      
-    - name: Check if release exists
-      id: check_release
-      run: |
-        RELEASE_EXISTS=$(curl -s -o /dev/null -w "%{http_code}" https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ steps.tag.outputs.name }})
-        if [ "$RELEASE_EXISTS" == "200" ]; then
-          echo "Release already exists, skipping release creation"
-          echo "exists=true" >> $GITHUB_OUTPUT
-        else
-          echo "Release does not exist"
-          echo "exists=false" >> $GITHUB_OUTPUT
-        fi
-      
-    - name: Create Release
+    # This handles when a tag is pushed but no release exists yet
+    - name: Auto-create release if tag pushed without release
       id: create_release
-      if: steps.check_release.outputs.exists == 'false'
-      uses: actions/create-release@v1
+      if: github.event_name == 'push'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: imagine-page-builder.zip
+        generate_release_notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ steps.tag.outputs.name }}
-        release_name: Release ${{ steps.tag.outputs.name }}
-        draft: false
-        prerelease: false
-    
-    - name: Get release upload URL
-      id: get_upload_url
-      if: steps.check_release.outputs.exists == 'true'
-      run: |
-        UPLOAD_URL=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ steps.tag.outputs.name }} | jq -r .upload_url)
-        echo "url=${UPLOAD_URL}" >> $GITHUB_OUTPUT
-        
-    - name: Upload Release Asset (new release)
-      if: steps.check_release.outputs.exists == 'false'
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./imagine-page-builder.zip
-        asset_name: imagine-page-builder.zip
-        asset_content_type: application/zip
 
-    - name: Upload Release Asset (existing release)
-      if: steps.check_release.outputs.exists == 'true'
-      uses: actions/upload-release-asset@v1
+    # This handles when operating on an existing release
+    - name: Attach to existing release
+      if: github.event_name == 'release'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: imagine-page-builder.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.get_upload_url.outputs.url }}
-        asset_path: ./imagine-page-builder.zip
-        asset_name: imagine-page-builder.zip
-        asset_content_type: application/zip
