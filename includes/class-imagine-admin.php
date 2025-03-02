@@ -9,6 +9,7 @@ class Imagine_Admin {
         add_action('admin_menu', [$this, 'register_admin_menu']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
         add_action('admin_enqueue_scripts', [$this, 'maybe_redirect_to_imagine']);
+        add_filter('admin_body_class', [$this, 'add_editor_body_class']);
     }
     
     public function register_admin_menu() {
@@ -123,6 +124,7 @@ class Imagine_Admin {
             // Enqueue editor assets
             wp_enqueue_script('imagine-editor');
             wp_enqueue_style('imagine-editor-style');
+            wp_enqueue_style('dashicons');
             
             // Pass data to the editor
             wp_localize_script('imagine-editor', 'imagineData', [
@@ -135,10 +137,7 @@ class Imagine_Admin {
                 'available_blocks' => Imagine_Blocks::get_available_blocks()
             ]);
             
-            echo '<div class="wrap">';
-            echo '<h1>Editing: ' . esc_html($post->post_title) . '</h1>';
             echo '<div id="imagine-editor-app" data-post-id="' . esc_attr($post_id) . '"></div>';
-            echo '</div>';
         } else {
             echo '<div class="wrap">';
             echo '<h1>Imagine Editor</h1>';
@@ -152,7 +151,7 @@ class Imagine_Admin {
     }
     
     public function enqueue_admin_assets($hook) {
-        // Only load on our settings page
+        // Load on our settings page
         if ('toplevel_page_imagine-settings' === $hook) {
             wp_enqueue_style(
                 'imagine-admin-style',
@@ -169,5 +168,25 @@ class Imagine_Admin {
                 true
             );
         }
+        
+        // Load on our editor page
+        if (isset($_GET['page']) && $_GET['page'] === 'imagine-editor') {
+            wp_enqueue_style(
+                'imagine-admin-style',
+                IMAGINE_ASSETS_URL . 'imagine-admin.css',
+                [],
+                IMAGINE_VERSION
+            );
+        }
+    }
+    
+    /**
+     * Add a body class to the editor page
+     */
+    public function add_editor_body_class($classes) {
+        if (isset($_GET['page']) && $_GET['page'] === 'imagine-editor') {
+            $classes .= ' imagine-editor-page';
+        }
+        return $classes;
     }
 }
