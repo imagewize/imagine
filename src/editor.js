@@ -375,13 +375,13 @@ const ImagineEditor = {
             class="imagine-button" 
             :href="'post.php?post=' + post.id + '&action=edit'"
           >
-            Exit to WordPress
+            Exit to WordPress Editor
           </a>
         </div>
       </div>
       
       <div class="imagine-main">
-        <div class="imagine-sidebar imagine-blocks-sidebar">
+        <div class="imagine-blocks-sidebar">
           <h3>Available Blocks</h3>
           <div class="imagine-block-picker">
             <div 

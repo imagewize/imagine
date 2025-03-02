@@ -43,3 +43,258 @@
   vertical-align: middle;
   margin-right: 8px;
 }
+
+/* Full-screen editor styles */
+body.imagine-editor-page {
+  #wpadminbar,
+  #adminmenumain,
+  #wpfooter {
+    display: none !important;
+  }
+  
+  #wpcontent,
+  #wpbody-content {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+  }
+  
+  .wrap {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  .imagine-editor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 99999;
+    background: #f1f1f1;
+    display: flex;
+    flex-direction: column;
+    
+    .imagine-header {
+      height: 60px;
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-shadow: 0 1px 1px rgba(0,0,0,0.04);
+      
+      .imagine-logo {
+        font-size: 18px;
+        font-weight: 600;
+      }
+      
+      .imagine-actions {
+        display: flex;
+        gap: 10px;
+      }
+      
+      .imagine-button {
+        padding: 8px 12px;
+        border-radius: 3px;
+        background: #f7f7f7;
+        border: 1px solid #ddd;
+        cursor: pointer;
+        text-decoration: none;
+        color: #555;
+        
+        &-primary {
+          background: #0073aa;
+          border-color: #006799;
+          color: #fff;
+          
+          &:hover {
+            background: #006799;
+          }
+        }
+        
+        &:hover {
+          background: #f0f0f0;
+        }
+      }
+    }
+    
+    .imagine-main {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      
+      .imagine-blocks-sidebar,
+      .imagine-settings-sidebar {
+        width: 280px;
+        background: #fff;
+        border-right: 1px solid #ddd;
+        overflow-y: auto;
+        
+        h3 {
+          margin: 0;
+          padding: 15px;
+          border-bottom: 1px solid #ddd;
+          background: #f7f7f7;
+        }
+      }
+      
+      .imagine-blocks-sidebar .imagine-block-picker {
+        padding: 15px;
+      }
+      
+      .imagine-editor-canvas {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        background: #f1f1f1;
+      }
+      
+      .imagine-settings-sidebar {
+        border-right: none;
+        border-left: 1px solid #ddd;
+        
+        .imagine-block-settings {
+          padding: 15px;
+        }
+        
+        .imagine-setting {
+          margin-bottom: 15px;
+          
+          label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+          }
+          
+          textarea, 
+          select, 
+          input[type="text"] {
+            width: 100%;
+            padding: 8px;
+          }
+        }
+        
+        .imagine-no-selection {
+          padding: 15px;
+          color: #999;
+          font-style: italic;
+          text-align: center;
+        }
+      }
+    }
+  }
+  
+  .imagine-block-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 8px;
+    background: #f7f7f7;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    cursor: grab;
+    
+    &:hover {
+      background: #f0f0f0;
+    }
+    
+    &-icon {
+      margin-right: 10px;
+    }
+  }
+  
+  .imagine-block {
+    margin-bottom: 15px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    
+    &-selected {
+      border-color: #0073aa;
+      box-shadow: 0 0 0 1px #0073aa;
+    }
+    
+    &-content {
+      padding: 15px;
+      min-height: 50px;
+    }
+    
+    &-actions {
+      display: flex;
+      border-top: 1px solid #eee;
+      background: #f7f7f7;
+      
+      button {
+        flex: 1;
+        border: none;
+        background: transparent;
+        padding: 8px;
+        cursor: pointer;
+        color: #555;
+        
+        &:hover {
+          background: #f0f0f0;
+        }
+        
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+  
+  .imagine-empty-canvas {
+    text-align: center;
+    padding: 50px 0;
+    color: #999;
+    font-weight: normal;
+    font-style: italic;
+  }
+  
+  .imagine-notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background: #333;
+    color: #fff;
+    border-radius: 3px;
+    z-index: 100000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    
+    &-success {
+      background: #46b450;
+    }
+    
+    &-error {
+      background: #dc3232;
+    }
+    
+    &-hiding {
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+  }
+  
+  .imagine-dragged-block {
+    position: fixed;
+    z-index: 100000;
+    padding: 8px 12px;
+    background: #0073aa;
+    color: #fff;
+    border-radius: 3px;
+    pointer-events: none;
+    opacity: 0.8;
+  }
+  
+  .imagine-drop-indicator {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: #0073aa;
+    z-index: 10;
+  }
+}
